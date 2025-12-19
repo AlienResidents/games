@@ -1,7 +1,7 @@
 | | |
 |---|---|
 | **Last Updated** | 2025-12-19 |
-| **Author** | Claude Code (Opus 4.5) |
+| **Author** | Chrispy <alienresidents@gmail.com>, Claude Code (Opus 4.5) |
 | **Version** | 1.2.0 |
 
 # Browser Games Collection
@@ -20,6 +20,14 @@ A collection of browser-based games created entirely by Claude Code. Each game w
 - [Technical Details](#technical-details)
 - [Statistics](#statistics)
 - [License](#license)
+
+## Live Games
+
+| Game | URL |
+|------|-----|
+| Asteroids | https://asteroids.cdd.net.au |
+| Border Runner | https://border-runner.cdd.net.au |
+| Pong Evolution | https://pong-evolution.cdd.net.au |
 
 ---
 
