@@ -393,6 +393,28 @@ including this one!
 
 ---
 
+### Version Bump Reminder
+
+```
+have you updated the README version?
+```
+
+**Implementation:**
+- Bumped version from 1.2.0 to 1.3.0
+
+---
+
+### Meta-Prompt Inclusion
+
+```
+include this and that prompt in the README too please.
+```
+
+**Implementation:**
+- Added both prompts to maintain complete history
+
+---
+
 ## Technical Details
 
 ### Stack Comparison
