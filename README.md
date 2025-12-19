@@ -157,40 +157,6 @@ An alternative server-side implementation using Python, Flask, and WebSockets. F
 fitness = (wins × 100) + (point_differential × 10) + (points_scored × 1)
 ```
 
-**AI Controller Logic:**
-```python
-# Base target
-target_y = ball.y
-
-# Add prediction
-if prediction_depth > 0:
-    predicted_y = predict_ball_trajectory()
-    target_y = lerp(ball.y, predicted_y, prediction_depth)
-
-# Factor in velocity
-target_y += ball.vy * 10 * anticipation
-
-# Blend with defensive center position
-target_y = lerp(center_y, target_y, aggression)
-
-# Add randomness
-target_y += gaussian_noise(0, 30 * noise_tolerance)
-```
-
-**WebSocket Events:**
-
-| Event | Direction | Description |
-|-------|-----------|-------------|
-| `initialize` | Client → Server | Create new population |
-| `start_tournament` | Client → Server | Begin tournament(s) |
-| `stop` / `resume` | Client → Server | Pause/resume execution |
-| `set_speed` | Client → Server | Change game speed |
-| `state_update` | Server → Client | Full tournament state |
-| `game_update` | Server → Client | Real-time game frame |
-| `match_start` | Server → Client | New match beginning |
-| `match_complete` | Server → Client | Match result |
-| `tournament_complete` | Server → Client | All tournaments finished |
-
 **Directory:** [`llm/pong-evolution/`](llm/pong-evolution/)
 
 ---
