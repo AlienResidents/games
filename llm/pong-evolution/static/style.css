@@ -1,0 +1,358 @@
+/* Pong Evolution - Styles */
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: #0f0f1a;
+    color: #e0e0e0;
+    min-height: 100vh;
+}
+
+.container {
+    max-width: 1600px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+header {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+header h1 {
+    color: #00ff88;
+    font-size: 2.5em;
+    text-shadow: 0 0 20px rgba(0, 255, 136, 0.3);
+}
+
+header .subtitle {
+    color: #888;
+    margin-top: 5px;
+}
+
+.main-content {
+    display: flex;
+    gap: 20px;
+}
+
+.game-section {
+    flex: 0 0 auto;
+}
+
+.game-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 20px;
+    background: #1a1a2e;
+    border-radius: 10px 10px 0 0;
+    border-bottom: 2px solid #333;
+}
+
+.player-info {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.player-info.right {
+    flex-direction: row-reverse;
+}
+
+.player-name {
+    font-size: 1.2em;
+    color: #00ff88;
+    max-width: 150px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.score {
+    font-size: 2em;
+    font-weight: bold;
+    color: #fff;
+    min-width: 40px;
+    text-align: center;
+}
+
+.match-info {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    color: #888;
+}
+
+#game-canvas {
+    display: block;
+    border: 2px solid #333;
+    background: #1a1a2e;
+}
+
+.controls {
+    display: flex;
+    gap: 20px;
+    padding: 15px 20px;
+    background: #1a1a2e;
+    border-radius: 0 0 10px 10px;
+    border-top: 2px solid #333;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+.control-group {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.control-group label {
+    color: #888;
+}
+
+.control-group input,
+.control-group select {
+    padding: 8px 12px;
+    border: 1px solid #444;
+    border-radius: 5px;
+    background: #2a2a4e;
+    color: #fff;
+    font-size: 14px;
+}
+
+.control-group input[type="number"] {
+    width: 80px;
+}
+
+.button-group {
+    display: flex;
+    gap: 10px;
+    margin-left: auto;
+}
+
+button {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    font-size: 14px;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+button:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+#init-btn {
+    background: #4a4a6e;
+    color: #fff;
+}
+
+#init-btn:hover:not(:disabled) {
+    background: #5a5a7e;
+}
+
+#start-btn {
+    background: #00aa66;
+    color: #fff;
+}
+
+#start-btn:hover:not(:disabled) {
+    background: #00cc77;
+}
+
+#stop-btn {
+    background: #ff6b6b;
+    color: #fff;
+}
+
+#stop-btn:hover:not(:disabled) {
+    background: #ff8080;
+}
+
+.sidebar {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    min-width: 300px;
+    max-width: 500px;
+}
+
+.panel {
+    background: #1a1a2e;
+    border-radius: 10px;
+    padding: 15px;
+    border: 1px solid #333;
+}
+
+.panel h2 {
+    font-size: 1.1em;
+    color: #00ff88;
+    margin-bottom: 10px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid #333;
+}
+
+.generation-info {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 10px;
+    color: #888;
+}
+
+.generation-info strong {
+    color: #fff;
+}
+
+.bracket {
+    max-height: 300px;
+    overflow-y: auto;
+}
+
+.bracket-rounds {
+    display: flex;
+    gap: 10px;
+    overflow-x: auto;
+    padding-bottom: 10px;
+}
+
+.bracket-round {
+    min-width: 120px;
+}
+
+.bracket-round h3 {
+    font-size: 0.9em;
+    color: #888;
+    margin-bottom: 8px;
+}
+
+.bracket-match {
+    background: #2a2a4e;
+    border-radius: 5px;
+    padding: 8px;
+    margin-bottom: 8px;
+    font-size: 0.85em;
+    border: 1px solid transparent;
+}
+
+.bracket-match.active {
+    border-color: #00ff88;
+    box-shadow: 0 0 10px rgba(0, 255, 136, 0.2);
+}
+
+.bracket-match.completed {
+    opacity: 0.7;
+}
+
+.match-player {
+    padding: 2px 0;
+}
+
+.match-player.winner {
+    color: #00ff88;
+    font-weight: bold;
+}
+
+.match-vs {
+    color: #555;
+    font-size: 0.8em;
+    text-align: center;
+}
+
+.champion {
+    background: linear-gradient(135deg, #ffd700 0%, #ffaa00 100%);
+    color: #000;
+    padding: 10px;
+    border-radius: 5px;
+    text-align: center;
+    font-weight: bold;
+    margin-top: 10px;
+}
+
+.standings {
+    max-height: 200px;
+    overflow-y: auto;
+}
+
+.standings table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.standings th,
+.standings td {
+    padding: 6px 8px;
+    text-align: left;
+    border-bottom: 1px solid #333;
+}
+
+.standings th {
+    color: #888;
+    font-weight: normal;
+    font-size: 0.85em;
+}
+
+.standings tr:hover {
+    background: #2a2a4e;
+}
+
+.log {
+    max-height: 150px;
+    overflow-y: auto;
+    font-family: monospace;
+    font-size: 0.85em;
+}
+
+.log-entry {
+    padding: 4px 0;
+    border-bottom: 1px solid #222;
+    color: #aaa;
+}
+
+.log-entry:first-child {
+    color: #fff;
+}
+
+/* Scrollbar styling */
+::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: #1a1a2e;
+}
+
+::-webkit-scrollbar-thumb {
+    background: #4a4a6e;
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: #5a5a7e;
+}
+
+/* Responsive adjustments */
+@media (max-width: 1200px) {
+    .main-content {
+        flex-direction: column;
+    }
+
+    .sidebar {
+        max-width: none;
+        flex-direction: row;
+        flex-wrap: wrap;
+    }
+
+    .panel {
+        flex: 1;
+        min-width: 250px;
+    }
+}

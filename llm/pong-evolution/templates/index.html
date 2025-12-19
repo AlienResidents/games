@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pong Evolution Tournament</title>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Pong Evolution Tournament</h1>
+            <p class="subtitle">Genetic Algorithm AI Battle</p>
+        </header>
+
+        <div class="main-content">
+            <div class="game-section">
+                <div class="game-header">
+                    <div class="player-info left">
+                        <span class="player-name" id="left-name">Player 1</span>
+                        <span class="score" id="left-score">0</span>
+                    </div>
+                    <div class="match-info">
+                        <span id="round-info">Round 1</span>
+                        <span id="match-info">Match 1</span>
+                    </div>
+                    <div class="player-info right">
+                        <span class="score" id="right-score">0</span>
+                        <span class="player-name" id="right-name">Player 2</span>
+                    </div>
+                </div>
+
+                <canvas id="game-canvas" width="800" height="600"></canvas>
+
+                <div class="controls">
+                    <div class="control-group">
+                        <label>Tournament Rounds:</label>
+                        <input type="number" id="num-tournaments" value="5" min="1" max="100">
+                    </div>
+                    <div class="control-group">
+                        <label>Speed:</label>
+                        <select id="speed-select">
+                            <option value="1">1x</option>
+                            <option value="2">2x</option>
+                            <option value="5" selected>5x</option>
+                            <option value="10">10x</option>
+                        </select>
+                    </div>
+                    <div class="button-group">
+                        <button id="init-btn">Initialize</button>
+                        <button id="start-btn">Start Tournament</button>
+                        <button id="stop-btn" disabled>Pause</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="sidebar">
+                <div class="panel bracket-panel">
+                    <h2>Tournament Bracket</h2>
+                    <div class="generation-info">
+                        <span>Generation: <strong id="generation">0</strong></span>
+                        <span>Progress: <strong id="tournament-progress">0/0</strong></span>
+                    </div>
+                    <div id="bracket" class="bracket"></div>
+                </div>
+
+                <div class="panel standings-panel">
+                    <h2>Current Standings</h2>
+                    <div id="standings" class="standings"></div>
+                </div>
+
+                <div class="panel log-panel">
+                    <h2>Event Log</h2>
+                    <div id="log" class="log"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.7.2/socket.io.min.js"></script>
+    <script src="/static/game.js"></script>
+</body>
+</html>
