@@ -170,6 +170,26 @@ cd pong-evolution && python3 -m http.server 8002 --bind 0.0.0.0
 
 Or with Node.js: `npx serve <directory> -p <port>`
 
+### Kubernetes Deployment
+
+The vanilla JS games can be deployed to Kubernetes using the included manifests. Each game is containerized with nginx:alpine and served via Traefik ingress with automatic TLS certificates.
+
+```bash
+# Quick deploy (after configuring your registry and domain)
+kubectl apply -f k8s/namespace.yaml
+kubectl apply -f asteroids/k8s/
+kubectl apply -f border-runner/k8s/
+kubectl apply -f pong-evolution/k8s/
+```
+
+See [DEPLOYMENT.md](DEPLOYMENT.md) for complete instructions including:
+- GCP Artifact Registry setup
+- Building and pushing container images
+- Kubernetes manifest configuration
+- Troubleshooting guide
+
+---
+
 ### Python/Flask Pong Evolution
 
 ```bash

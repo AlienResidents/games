@@ -1,0 +1,46 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: asteroids
+  namespace: games
+  labels:
+    app: asteroids
+    app.kubernetes.io/name: asteroids
+    app.kubernetes.io/component: game
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: asteroids
+  template:
+    metadata:
+      labels:
+        app: asteroids
+    spec:
+      imagePullSecrets:
+        - name: gcr-secret
+      containers:
+        - name: asteroids
+          image: australia-southeast1-docker.pkg.dev/chrispy/games/asteroids:latest
+          ports:
+            - containerPort: 80
+              protocol: TCP
+          resources:
+            requests:
+              memory: "32Mi"
+              cpu: "10m"
+            limits:
+              memory: "64Mi"
+              cpu: "100m"
+          livenessProbe:
+            httpGet:
+              path: /
+              port: 80
+            initialDelaySeconds: 5
+            periodSeconds: 30
+          readinessProbe:
+            httpGet:
+              path: /
+              port: 80
+            initialDelaySeconds: 3
+            periodSeconds: 10
