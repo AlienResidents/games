@@ -58,13 +58,13 @@ Watch as increasingly skilled Pong AIs emerge through natural selection!
 
 ```bash
 # Using Python
-python3 -m http.server 8000
+python3 -m http.server 8002
 
 # Using Node.js
-npx serve . -p 8000
+npx serve . -p 8002
 ```
 
-Then open http://localhost:8000 in your browser.
+Then open http://localhost:8002 in your browser.
 
 ### Quick Start
 

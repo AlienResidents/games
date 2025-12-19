@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
 """Flask server for Pong Evolution tournament."""
 
-import socket
 import threading
 import time
 from flask import Flask, render_template, jsonify
@@ -22,13 +21,8 @@ running = False
 game_thread = None
 
 
-def find_free_port():
-    """Find a free TCP port."""
-    with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
-        s.bind(('', 0))
-        s.listen(1)
-        port = s.getsockname()[1]
-    return port
+# Static port for the Flask server
+DEFAULT_PORT = 8003
 
 
 @app.route('/')
@@ -183,13 +177,12 @@ def game_loop():
 
 def main():
     """Main entry point."""
-    port = find_free_port()
     print(f"\n{'='*50}")
     print(f"  Pong Evolution Tournament Server")
-    print(f"  Running on http://0.0.0.0:{port}")
+    print(f"  Running on http://0.0.0.0:{DEFAULT_PORT}")
     print(f"{'='*50}\n")
 
-    socketio.run(app, host='0.0.0.0', port=port, debug=False, allow_unsafe_werkzeug=True)
+    socketio.run(app, host='0.0.0.0', port=DEFAULT_PORT, debug=False, allow_unsafe_werkzeug=True)
 
 
 if __name__ == '__main__':

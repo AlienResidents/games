@@ -47,3 +47,6 @@ htmlcov/
 # Misc
 *.log
 *.tmp
+
+# GCP configuration (contains project ID)
+.gcp-config

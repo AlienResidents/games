@@ -145,3 +145,171 @@ body {
     color: #888;
     font-size: 18px;
 }
+
+/* ===== TOUCH CONTROLS ===== */
+#touch-controls {
+    display: none;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 50;
+}
+
+.touch-device #touch-controls {
+    display: block;
+}
+
+.touch-btn {
+    position: absolute;
+    pointer-events: auto;
+    background: rgba(255, 255, 255, 0.15);
+    border: 2px solid rgba(255, 255, 255, 0.4);
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: rgba(255, 255, 255, 0.7);
+    font-family: 'Courier New', monospace;
+    font-weight: bold;
+    font-size: 24px;
+    user-select: none;
+    -webkit-user-select: none;
+    touch-action: none;
+    transition: background 0.1s, border-color 0.1s, transform 0.1s;
+}
+
+.touch-btn.pressed {
+    background: rgba(255, 255, 255, 0.4);
+    border-color: rgba(255, 255, 255, 0.8);
+    transform: scale(0.95);
+}
+
+/* Movement cluster - bottom left */
+#btn-left {
+    width: 70px;
+    height: 70px;
+    bottom: 30px;
+    left: 20px;
+}
+
+#btn-thrust {
+    width: 70px;
+    height: 70px;
+    bottom: 110px;
+    left: 75px;
+}
+
+#btn-right {
+    width: 70px;
+    height: 70px;
+    bottom: 30px;
+    left: 130px;
+}
+
+/* Fire button - bottom right */
+#btn-fire {
+    width: 90px;
+    height: 90px;
+    bottom: 30px;
+    right: 20px;
+    background: rgba(255, 100, 100, 0.2);
+    border-color: rgba(255, 100, 100, 0.5);
+    font-size: 18px;
+}
+
+#btn-fire.pressed {
+    background: rgba(255, 100, 100, 0.5);
+    border-color: rgba(255, 100, 100, 0.9);
+}
+
+/* Hyperspace - top center */
+#btn-hyperspace {
+    width: 90px;
+    height: 50px;
+    top: 70px;
+    left: 50%;
+    transform: translateX(-50%);
+    border-radius: 25px;
+    font-size: 14px;
+    background: rgba(0, 255, 255, 0.15);
+    border-color: rgba(0, 255, 255, 0.4);
+}
+
+#btn-hyperspace.pressed {
+    background: rgba(0, 255, 255, 0.4);
+    border-color: rgba(0, 255, 255, 0.8);
+    transform: translateX(-50%) scale(0.95);
+}
+
+/* Pause button - top right */
+#btn-pause {
+    width: 50px;
+    height: 50px;
+    top: 20px;
+    right: 140px;
+    font-size: 20px;
+}
+
+/* Mobile responsive adjustments */
+@media (max-width: 1024px) {
+    #game-container {
+        width: 100vw;
+        height: 100vh;
+        max-width: 100%;
+        max-height: 100%;
+        border: none;
+    }
+
+    #gameCanvas {
+        width: 100%;
+        height: 100%;
+    }
+}
+
+@media (max-height: 500px) and (orientation: landscape) {
+    /* Landscape phone - compact layout */
+    #btn-left {
+        bottom: 20px;
+        left: 15px;
+        width: 60px;
+        height: 60px;
+    }
+
+    #btn-thrust {
+        bottom: 90px;
+        left: 60px;
+        width: 60px;
+        height: 60px;
+    }
+
+    #btn-right {
+        bottom: 20px;
+        left: 105px;
+        width: 60px;
+        height: 60px;
+    }
+
+    #btn-fire {
+        bottom: 20px;
+        right: 15px;
+        width: 80px;
+        height: 80px;
+    }
+
+    #btn-hyperspace {
+        top: 15px;
+        width: 80px;
+        height: 40px;
+        font-size: 12px;
+    }
+
+    #btn-pause {
+        top: 15px;
+        right: 100px;
+        width: 40px;
+        height: 40px;
+    }
+}

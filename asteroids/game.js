@@ -686,3 +686,170 @@ highScoreDisplay.textContent = game.highScore;
 
 // Prevent context menu
 canvas.addEventListener('contextmenu', (e) => e.preventDefault());
+
+// ===== TOUCH CONTROLS =====
+const touchControls = {
+    isTouchDevice: false,
+    container: null,
+    buttons: {},
+    activeTouches: new Map(),
+
+    init() {
+        this.isTouchDevice = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
+
+        if (this.isTouchDevice) {
+            document.body.classList.add('touch-device');
+            this.createButtons();
+            this.attachListeners();
+            log('TOUCH', 'Touch controls initialized');
+        }
+    },
+
+    createButtons() {
+        // Create container
+        this.container = document.createElement('div');
+        this.container.id = 'touch-controls';
+        document.getElementById('game-container').appendChild(this.container);
+
+        // Button definitions
+        const buttonDefs = [
+            { id: 'btn-left', label: '◀', key: 'KeyA', type: 'hold' },
+            { id: 'btn-thrust', label: '▲', key: 'KeyW', type: 'hold' },
+            { id: 'btn-right', label: '▶', key: 'KeyD', type: 'hold' },
+            { id: 'btn-fire', label: 'FIRE', key: 'Space', type: 'tap' },
+            { id: 'btn-hyperspace', label: 'HYPER', key: 'KeyS', type: 'tap' },
+            { id: 'btn-pause', label: '⏸', key: 'KeyP', type: 'tap' }
+        ];
+
+        buttonDefs.forEach(def => {
+            const btn = document.createElement('div');
+            btn.id = def.id;
+            btn.className = 'touch-btn';
+            btn.textContent = def.label;
+            btn.dataset.key = def.key;
+            btn.dataset.type = def.type;
+            this.container.appendChild(btn);
+            this.buttons[def.id] = btn;
+        });
+    },
+
+    attachListeners() {
+        const container = document.getElementById('game-container');
+
+        // Prevent default touch behaviors
+        container.style.touchAction = 'none';
+
+        container.addEventListener('touchstart', (e) => this.handleTouchStart(e), { passive: false });
+        container.addEventListener('touchmove', (e) => this.handleTouchMove(e), { passive: false });
+        container.addEventListener('touchend', (e) => this.handleTouchEnd(e), { passive: false });
+        container.addEventListener('touchcancel', (e) => this.handleTouchEnd(e), { passive: false });
+    },
+
+    handleTouchStart(e) {
+        e.preventDefault();
+
+        for (const touch of e.changedTouches) {
+            const btn = this.getButtonAt(touch.clientX, touch.clientY);
+            if (btn) {
+                this.activeTouches.set(touch.identifier, btn.id);
+                this.activateButton(btn);
+            }
+        }
+    },
+
+    handleTouchMove(e) {
+        e.preventDefault();
+
+        for (const touch of e.changedTouches) {
+            const currentBtnId = this.activeTouches.get(touch.identifier);
+            const newBtn = this.getButtonAt(touch.clientX, touch.clientY);
+
+            // If finger moved to a different button
+            if (currentBtnId && (!newBtn || newBtn.id !== currentBtnId)) {
+                const oldBtn = this.buttons[currentBtnId];
+                if (oldBtn) {
+                    this.deactivateButton(oldBtn);
+                }
+            }
+
+            if (newBtn && (!currentBtnId || newBtn.id !== currentBtnId)) {
+                this.activeTouches.set(touch.identifier, newBtn.id);
+                this.activateButton(newBtn);
+            } else if (!newBtn) {
+                this.activeTouches.delete(touch.identifier);
+            }
+        }
+    },
+
+    handleTouchEnd(e) {
+        for (const touch of e.changedTouches) {
+            const btnId = this.activeTouches.get(touch.identifier);
+            if (btnId) {
+                const btn = this.buttons[btnId];
+                if (btn) {
+                    this.deactivateButton(btn);
+                }
+                this.activeTouches.delete(touch.identifier);
+            }
+        }
+    },
+
+    getButtonAt(clientX, clientY) {
+        for (const btn of Object.values(this.buttons)) {
+            const rect = btn.getBoundingClientRect();
+            if (clientX >= rect.left && clientX <= rect.right &&
+                clientY >= rect.top && clientY <= rect.bottom) {
+                return btn;
+            }
+        }
+        return null;
+    },
+
+    activateButton(btn) {
+        const key = btn.dataset.key;
+        const type = btn.dataset.type;
+
+        btn.classList.add('pressed');
+
+        if (type === 'tap') {
+            // Single action buttons
+            if (key === 'Space') {
+                if (game.ship && game.isRunning && !game.isPaused) {
+                    game.ship.shoot();
+                }
+            } else if (key === 'KeyS') {
+                if (game.ship && game.isRunning && !game.isPaused) {
+                    game.ship.hyperspace();
+                }
+            } else if (key === 'KeyP') {
+                if (game.isRunning) {
+                    game.isPaused = !game.isPaused;
+                    pauseScreen.style.display = game.isPaused ? 'flex' : 'none';
+                }
+            }
+        } else {
+            // Hold buttons - set key state
+            game.keys[key] = true;
+        }
+
+        log('TOUCH', `Button activated: ${btn.id} (${key})`);
+    },
+
+    deactivateButton(btn) {
+        const key = btn.dataset.key;
+        const type = btn.dataset.type;
+
+        btn.classList.remove('pressed');
+
+        if (type === 'hold') {
+            game.keys[key] = false;
+        }
+
+        log('TOUCH', `Button deactivated: ${btn.id} (${key})`);
+    }
+};
+
+// Initialize touch controls when DOM is ready
+document.addEventListener('DOMContentLoaded', () => {
+    touchControls.init();
+});

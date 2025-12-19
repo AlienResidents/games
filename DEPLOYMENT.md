@@ -136,7 +136,30 @@ export YOUR_DOMAIN="YOUR_DOMAIN"               # e.g., example.com
 export YOUR_EMAIL="YOUR_EMAIL"
 ```
 
-### 2. Create GCP Artifact Registry Repository
+### 2. Create GCP Infrastructure
+
+#### Option A: Automated Script (Recommended)
+
+Use the included script to create GCP resources without passing sensitive info through an LLM:
+
+```bash
+# Initialize config file with your settings
+scripts/setup-gcp-infrastructure.bash --init-config
+
+# Edit the config file with your GCP project ID
+vi .gcp-config
+
+# Run the setup (creates Artifact Registry and service account)
+scripts/setup-gcp-infrastructure.bash all
+
+# Or run with explicit project
+GCP_PROJECT=your-project-id scripts/setup-gcp-infrastructure.bash all
+
+# Check status
+scripts/setup-gcp-infrastructure.bash status
+```
+
+#### Option B: Manual Setup
 
 ```bash
 # Set your GCP project
@@ -182,6 +205,10 @@ kubectl apply -f games/k8s/namespace.yaml
 
 ### 6. Create Image Pull Secret
 
+#### Option A: Temporary Access Token (Development)
+
+Quick setup using your user credentials. Token expires after ~1 hour.
+
 ```bash
 ACCESS_TOKEN=$(gcloud auth print-access-token)
 
@@ -193,7 +220,82 @@ kubectl create secret docker-registry gcr-secret \
   --docker-email=${YOUR_EMAIL}
 ```
 
-**Note**: The access token expires. For production, use a service account key or Workload Identity.
+To refresh an expired token:
+```bash
+kubectl delete secret gcr-secret -n games
+# Then recreate with fresh token using the command above
+```
+
+#### Option B: Service Account Key (Production)
+
+Create a dedicated service account with long-lived credentials.
+
+```bash
+# Create service account
+gcloud iam service-accounts create k8s-image-puller \
+  --description="Service account for Kubernetes to pull container images" \
+  --display-name="K8s Image Puller"
+
+# Grant Artifact Registry Reader role
+gcloud projects add-iam-policy-binding ${GCP_PROJECT} \
+  --member="serviceAccount:k8s-image-puller@${GCP_PROJECT}.iam.gserviceaccount.com" \
+  --role="roles/artifactregistry.reader"
+
+# Create and download key file
+gcloud iam service-accounts keys create ~/k8s-image-puller-key.json \
+  --iam-account=k8s-image-puller@${GCP_PROJECT}.iam.gserviceaccount.com
+
+# Create Kubernetes secret from key file
+kubectl create secret docker-registry gcr-secret \
+  --namespace=games \
+  --docker-server=${GCP_REGION}-docker.pkg.dev \
+  --docker-username=_json_key \
+  --docker-password="$(cat ~/k8s-image-puller-key.json)" \
+  --docker-email=${YOUR_EMAIL}
+
+# Secure the key file
+chmod 600 ~/k8s-image-puller-key.json
+```
+
+**Security Note**: Store the key file securely. Consider using Workload Identity for GKE clusters instead of key files.
+
+#### Option C: Automated Script with SOPS Encryption (Recommended)
+
+Use the included script to automate service account creation and encrypt the key with sops.
+
+```bash
+# Run the setup script with sops encryption
+GCP_PROJECT=your-project-id scripts/setup-image-pull-secret.bash --sops
+
+# Or with all options
+GCP_PROJECT=your-project-id \
+GCP_REGION=australia-southeast1 \
+K8S_NAMESPACE=games \
+SERVICE_ACCOUNT_NAME=games-k8s-puller \
+scripts/setup-image-pull-secret.bash --sops
+```
+
+The script will:
+1. Create a GCP service account
+2. Grant Artifact Registry Reader role
+3. Create and encrypt the key file with sops
+4. Create the Kubernetes secret
+
+To recreate the secret from an existing encrypted key:
+```bash
+kubectl delete secret gcr-secret -n games
+kubectl create secret docker-registry gcr-secret \
+  --namespace=games \
+  --docker-server=${GCP_REGION}-docker.pkg.dev \
+  --docker-username=_json_key \
+  --docker-password="$(sops -d secrets/k8s-image-puller-key.json)" \
+  --docker-email=noreply@example.com
+```
+
+**Prerequisites for SOPS:**
+- sops CLI installed
+- `.sops.yaml` configured with your KMS key
+- GCP KMS permissions to encrypt/decrypt
 
 ### 7. Update Deployment Manifests
 
@@ -292,8 +394,14 @@ kubectl logs -n games deployment/pong-evolution
 ```
 games/
 ├── DEPLOYMENT.md           # This file
+├── .sops.yaml              # SOPS encryption rules
 ├── k8s/
 │   └── namespace.yaml      # Shared namespace
+├── scripts/
+│   ├── setup-gcp-infrastructure.bash # GCP resources setup script
+│   └── setup-image-pull-secret.bash  # K8s image pull secret script
+├── secrets/
+│   └── k8s-image-puller-key.json     # Encrypted service account key (sops)
 ├── asteroids/
 │   ├── Dockerfile
 │   ├── index.html

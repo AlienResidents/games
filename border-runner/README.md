@@ -12,6 +12,7 @@ A 2D top-down open-world survival game where you play as a smuggler transporting
 
 - [Screenshots](#screenshots)
 - [Controls](#controls)
+- [Mobile Controls](#mobile-controls)
 - [Gameplay](#gameplay)
 - [Features](#features)
 - [Running the Game](#running-the-game)
@@ -37,6 +38,19 @@ A 2D top-down open-world survival game where you play as a smuggler transporting
 | SHIFT | Sprint (drains stamina) |
 | E | Pick up package |
 | SPACE | Drop cargo at drop zone |
+
+---
+
+## Mobile Controls
+
+Touch controls are automatically enabled on mobile devices:
+
+- **Virtual Joystick** (bottom-left): Drag to move in any direction
+- **PICKUP** button: Pick up nearby packages
+- **DROP** button: Drop package in delivery zone
+- **SPRINT** button: Hold while moving to sprint (uses stamina)
+
+Touch controls support multi-touch, so you can sprint while moving with the joystick.
 
 ---
 

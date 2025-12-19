@@ -208,9 +208,11 @@ python3 -m venv .venv
 source .venv/bin/activate
 pip install -r requirements.txt
 
-# Start server (auto-finds free port, binds to 0.0.0.0)
+# Start server on port 8003
 python app.py
 ```
+
+Then open http://localhost:8003 in your browser.
 
 ---
 
@@ -260,6 +262,134 @@ configurable in the webui. Also listen on all IP addresses, on a free TCP port.
 **Planning clarifications (Python version):**
 - Population: 32 players
 - Tournament format: Single elimination
+
+---
+
+### Mobile Touch Controls Prompt
+
+```
+let's add mobile phone support now please, so a keyboard isn't required.
+Also, ensure we add this to the prompts used section.
+```
+
+**Implementation:**
+- **Asteroids**: Fixed touch buttons (◀ ▲ ▶ for rotation/thrust, FIRE, HYPER, ⏸)
+- **Border Runner**: Virtual joystick for movement + action buttons (PICKUP, DROP, SPRINT)
+- **Pong Evolution**: No changes needed (AI vs AI gameplay - no player input)
+
+Touch controls auto-detect mobile devices and support multi-touch for simultaneous actions.
+
+---
+
+### Kubernetes Deployment Prompt
+
+```
+ultrathink analyse the directory /home/cdd/git/github/alienresidents/games, and
+for each game I want you to create a Dockerfile for each game, and then in a
+subdirectory of each create a k8s directory, and create kubernetes manifests
+for running the game through on the cdd.net.au domain. Ensure the domain does
+not already exist. Ensure that each game is session based. In order to figure
+out what is available, prompt me for tool usage, or any questions you have or
+clarifications you want/need. Make sure you include a history of this prompt
+and subsequent conversation for all documentation. Once you're done, commit
+and push to git. Lesssssss go!
+```
+
+**Clarifications gathered:**
+- DNS: User configures DNS; use `dig` to check existing entries
+- TLS: Traefik's built-in Let's Encrypt resolver (`le`)
+- Namespace: `games`
+- Subdomains: asteroids, border-runner, pong-evolution
+- Container Registry: GCP Artifact Registry
+- Image naming: `games/<game>` pattern
+- GCP Region: `australia-southeast1` (Sydney)
+- Container Tool: Podman (not Docker)
+
+**Implementation:**
+- Created Dockerfiles using nginx:alpine for static games
+- Created K8s manifests (deployment, service, ingress) for each game
+- Session handling via client-side localStorage
+- Full documentation in [DEPLOYMENT.md](DEPLOYMENT.md)
+
+---
+
+### Deployment Infrastructure Prompts
+
+**Image Versioning:**
+```
+let's use versioning tags based on the timestamp they were built, and patch
+the deployment for new images.
+```
+
+**Service Account Setup:**
+```
+let's create a service account in GCP so we don't have to worry about token timeout
+```
+
+```
+make sure we encrypt the service account key with "sops". Also, update
+documentation for this step, but make it generic.
+```
+
+```
+when using sops, use --extract, and --set.
+```
+
+**Scripts Directory:**
+```
+create a scripts/ directory with the commands used for GCP etc, but make the
+variables configurable, and default to sane but non-sensitive defaults.
+```
+
+**Infrastructure Script:**
+```
+Also, create a script for creating infrastructure, so as to not pass the
+sensitive info through an LLM.
+```
+
+**Implementation:**
+- Created `scripts/setup-gcp-infrastructure.bash` - creates Artifact Registry and service account
+- Created `scripts/setup-image-pull-secret.bash` - creates K8s image pull secret with sops encryption
+- Service account keys encrypted with sops using GCP KMS
+- Config file support (`.gcp-config`) to avoid passing sensitive values
+- Updated `.sops.yaml` with rules for `secrets/` directory
+- Image tags use `YYYYMMDD-HHMMSS` format for versioning
+- Documentation updated in `DEPLOYMENT.md` with automated and manual options
+
+---
+
+### Static Ports Prompt
+
+```
+make sure you add all of the prompts used thus far to the README, we want to
+keep track of this history. Also, let's change the random ports to static
+ports for our games.
+```
+
+**Implementation:**
+- Assigned static ports to each game for consistent local development
+- Updated all README files with correct port assignments
+
+| Game | Port |
+|------|------|
+| Border Runner | 8000 |
+| Asteroids | 8001 |
+| Pong Evolution (JS) | 8002 |
+| Pong Evolution (Flask) | 8003 |
+
+---
+
+### Prompt Documentation Verification
+
+```
+have you documented all of the prompts used so far? If not, please do,
+including this one!
+```
+
+**Implementation:**
+- Added Kubernetes Deployment Prompt (was only in DEPLOYMENT.md)
+- Verified all prompts are documented in chronological order
+- Added this meta-prompt for completeness
 
 ---
 

@@ -1,0 +1,7 @@
+creation_rules:
+    # Secrets directory - yaml and json files
+    - path_regex: secrets/.*\.(yaml|json)$
+      gcp_kms: projects/chrispy/locations/global/keyRings/sops/cryptoKeys/sops-key
+    # Legacy pattern for gcp files
+    - path_regex: secret.*\.yaml$
+      gcp_kms: projects/chrispy/locations/global/keyRings/sops/cryptoKeys/sops-key

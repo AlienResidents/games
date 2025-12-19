@@ -12,6 +12,7 @@ A classic Asteroids arcade game clone with vector-style graphics and physics-bas
 
 - [Screenshots](#screenshots)
 - [Controls](#controls)
+- [Mobile Controls](#mobile-controls)
 - [Gameplay](#gameplay)
 - [Features](#features)
 - [Running the Game](#running-the-game)
@@ -36,6 +37,23 @@ A classic Asteroids arcade game clone with vector-style graphics and physics-bas
 | S / Arrow Down | Hyperspace (random teleport) |
 | SPACE | Fire |
 | P | Pause |
+
+---
+
+## Mobile Controls
+
+Touch controls are automatically enabled on mobile devices:
+
+| Button | Action |
+|--------|--------|
+| ◀ | Rotate left (hold) |
+| ▲ | Thrust forward (hold) |
+| ▶ | Rotate right (hold) |
+| FIRE | Shoot |
+| HYPER | Hyperspace teleport |
+| ⏸ | Pause game |
+
+Touch controls support multi-touch, so you can thrust and fire simultaneously.
 
 ---
 
@@ -80,13 +98,13 @@ A classic Asteroids arcade game clone with vector-style graphics and physics-bas
 
 ```bash
 # Using Python
-python3 -m http.server 8000
+python3 -m http.server 8001
 
 # Using Node.js
-npx serve . -p 8000
+npx serve . -p 8001
 ```
 
-Then open http://localhost:8000 in your browser.
+Then open http://localhost:8001 in your browser.
 
 ---
 

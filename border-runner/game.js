@@ -994,3 +994,251 @@ restartBtn.addEventListener('click', () => startGame(false));
 
 // Prevent context menu on right click
 canvas.addEventListener('contextmenu', (e) => e.preventDefault());
+
+// ===== TOUCH CONTROLS =====
+const touchControls = {
+    isTouchDevice: false,
+    joystick: {
+        container: null,
+        base: null,
+        stick: null,
+        active: false,
+        touchId: null,
+        baseX: 0,
+        baseY: 0,
+        baseRadius: 70,
+        stickRadius: 30
+    },
+    buttons: {},
+    activeTouches: new Map(),
+
+    init() {
+        this.isTouchDevice = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
+
+        if (this.isTouchDevice) {
+            document.body.classList.add('touch-device');
+            this.createControls();
+            this.attachListeners();
+        }
+    },
+
+    createControls() {
+        const container = document.getElementById('game-container');
+
+        // Create joystick
+        this.joystick.container = document.createElement('div');
+        this.joystick.container.id = 'joystick-container';
+
+        this.joystick.base = document.createElement('div');
+        this.joystick.base.id = 'joystick-base';
+
+        this.joystick.stick = document.createElement('div');
+        this.joystick.stick.id = 'joystick-stick';
+
+        this.joystick.base.appendChild(this.joystick.stick);
+        this.joystick.container.appendChild(this.joystick.base);
+        container.appendChild(this.joystick.container);
+
+        // Create action buttons container
+        const actionsContainer = document.createElement('div');
+        actionsContainer.id = 'touch-actions';
+
+        const buttonDefs = [
+            { id: 'btn-pickup', label: 'PICKUP', key: 'KeyE', type: 'tap' },
+            { id: 'btn-drop', label: 'DROP', key: 'Space', type: 'tap' },
+            { id: 'btn-sprint', label: 'SPRINT', key: 'ShiftLeft', type: 'hold' }
+        ];
+
+        buttonDefs.forEach(def => {
+            const btn = document.createElement('div');
+            btn.id = def.id;
+            btn.className = 'action-btn';
+            btn.textContent = def.label;
+            btn.dataset.key = def.key;
+            btn.dataset.type = def.type;
+            actionsContainer.appendChild(btn);
+            this.buttons[def.id] = btn;
+        });
+
+        container.appendChild(actionsContainer);
+    },
+
+    attachListeners() {
+        const container = document.getElementById('game-container');
+        container.style.touchAction = 'none';
+
+        container.addEventListener('touchstart', (e) => this.handleTouchStart(e), { passive: false });
+        container.addEventListener('touchmove', (e) => this.handleTouchMove(e), { passive: false });
+        container.addEventListener('touchend', (e) => this.handleTouchEnd(e), { passive: false });
+        container.addEventListener('touchcancel', (e) => this.handleTouchEnd(e), { passive: false });
+    },
+
+    handleTouchStart(e) {
+        e.preventDefault();
+
+        for (const touch of e.changedTouches) {
+            // Check if touching joystick area
+            const joystickRect = this.joystick.container.getBoundingClientRect();
+            if (touch.clientX >= joystickRect.left && touch.clientX <= joystickRect.right &&
+                touch.clientY >= joystickRect.top && touch.clientY <= joystickRect.bottom) {
+
+                if (!this.joystick.active) {
+                    this.joystick.active = true;
+                    this.joystick.touchId = touch.identifier;
+
+                    const baseRect = this.joystick.base.getBoundingClientRect();
+                    this.joystick.baseX = baseRect.left + baseRect.width / 2;
+                    this.joystick.baseY = baseRect.top + baseRect.height / 2;
+
+                    this.updateJoystick(touch.clientX, touch.clientY);
+                }
+                continue;
+            }
+
+            // Check action buttons
+            const btn = this.getButtonAt(touch.clientX, touch.clientY);
+            if (btn) {
+                this.activeTouches.set(touch.identifier, btn.id);
+                this.activateButton(btn);
+            }
+        }
+    },
+
+    handleTouchMove(e) {
+        e.preventDefault();
+
+        for (const touch of e.changedTouches) {
+            // Handle joystick movement
+            if (this.joystick.active && touch.identifier === this.joystick.touchId) {
+                this.updateJoystick(touch.clientX, touch.clientY);
+                continue;
+            }
+
+            // Handle button transitions
+            const currentBtnId = this.activeTouches.get(touch.identifier);
+            const newBtn = this.getButtonAt(touch.clientX, touch.clientY);
+
+            if (currentBtnId && (!newBtn || newBtn.id !== currentBtnId)) {
+                const oldBtn = this.buttons[currentBtnId];
+                if (oldBtn) {
+                    this.deactivateButton(oldBtn);
+                }
+            }
+
+            if (newBtn && (!currentBtnId || newBtn.id !== currentBtnId)) {
+                this.activeTouches.set(touch.identifier, newBtn.id);
+                this.activateButton(newBtn);
+            } else if (!newBtn && currentBtnId) {
+                this.activeTouches.delete(touch.identifier);
+            }
+        }
+    },
+
+    handleTouchEnd(e) {
+        for (const touch of e.changedTouches) {
+            // Handle joystick release
+            if (this.joystick.active && touch.identifier === this.joystick.touchId) {
+                this.joystick.active = false;
+                this.joystick.touchId = null;
+                this.resetJoystick();
+                continue;
+            }
+
+            // Handle button release
+            const btnId = this.activeTouches.get(touch.identifier);
+            if (btnId) {
+                const btn = this.buttons[btnId];
+                if (btn) {
+                    this.deactivateButton(btn);
+                }
+                this.activeTouches.delete(touch.identifier);
+            }
+        }
+    },
+
+    updateJoystick(touchX, touchY) {
+        const dx = touchX - this.joystick.baseX;
+        const dy = touchY - this.joystick.baseY;
+        const distance = Math.hypot(dx, dy);
+        const maxDistance = this.joystick.baseRadius - this.joystick.stickRadius;
+
+        let stickX, stickY;
+
+        if (distance > maxDistance) {
+            const angle = Math.atan2(dy, dx);
+            stickX = Math.cos(angle) * maxDistance;
+            stickY = Math.sin(angle) * maxDistance;
+        } else {
+            stickX = dx;
+            stickY = dy;
+        }
+
+        // Update stick visual position
+        this.joystick.stick.style.transform = `translate(calc(-50% + ${stickX}px), calc(-50% + ${stickY}px))`;
+
+        // Convert to normalized direction (-1 to 1)
+        const normalizedX = stickX / maxDistance;
+        const normalizedY = stickY / maxDistance;
+
+        // Apply dead zone (15%)
+        const deadZone = 0.15;
+
+        gameState.keys['KeyA'] = normalizedX < -deadZone;
+        gameState.keys['ArrowLeft'] = normalizedX < -deadZone;
+        gameState.keys['KeyD'] = normalizedX > deadZone;
+        gameState.keys['ArrowRight'] = normalizedX > deadZone;
+        gameState.keys['KeyW'] = normalizedY < -deadZone;
+        gameState.keys['ArrowUp'] = normalizedY < -deadZone;
+        gameState.keys['KeyS'] = normalizedY > deadZone;
+        gameState.keys['ArrowDown'] = normalizedY > deadZone;
+    },
+
+    resetJoystick() {
+        this.joystick.stick.style.transform = 'translate(-50%, -50%)';
+
+        // Clear all movement keys
+        gameState.keys['KeyW'] = false;
+        gameState.keys['KeyA'] = false;
+        gameState.keys['KeyS'] = false;
+        gameState.keys['KeyD'] = false;
+        gameState.keys['ArrowUp'] = false;
+        gameState.keys['ArrowDown'] = false;
+        gameState.keys['ArrowLeft'] = false;
+        gameState.keys['ArrowRight'] = false;
+    },
+
+    getButtonAt(clientX, clientY) {
+        for (const btn of Object.values(this.buttons)) {
+            const rect = btn.getBoundingClientRect();
+            if (clientX >= rect.left && clientX <= rect.right &&
+                clientY >= rect.top && clientY <= rect.bottom) {
+                return btn;
+            }
+        }
+        return null;
+    },
+
+    activateButton(btn) {
+        const key = btn.dataset.key;
+        const type = btn.dataset.type;
+
+        btn.classList.add('pressed');
+        gameState.keys[key] = true;
+    },
+
+    deactivateButton(btn) {
+        const key = btn.dataset.key;
+        const type = btn.dataset.type;
+
+        btn.classList.remove('pressed');
+
+        if (type === 'hold') {
+            gameState.keys[key] = false;
+        }
+    }
+};
+
+// Initialize touch controls when DOM is ready
+document.addEventListener('DOMContentLoaded', () => {
+    touchControls.init();
+});
