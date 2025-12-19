@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Border Runner - Survival Game</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div id="game-container">
+        <canvas id="gameCanvas"></canvas>
+        <div id="ui-overlay">
+            <div id="stats-panel">
+                <div class="stat">
+                    <span class="stat-label">Health:</span>
+                    <div class="stat-bar"><div id="health-bar" class="bar-fill health"></div></div>
+                </div>
+                <div class="stat">
+                    <span class="stat-label">Stamina:</span>
+                    <div class="stat-bar"><div id="stamina-bar" class="bar-fill stamina"></div></div>
+                </div>
+                <div class="stat">
+                    <span class="stat-label">Wanted:</span>
+                    <div class="stat-bar"><div id="wanted-bar" class="bar-fill wanted"></div></div>
+                </div>
+                <div class="stat">
+                    <span class="stat-label">Cash:</span>
+                    <span id="cash-display">$0</span>
+                </div>
+                <div class="stat">
+                    <span class="stat-label">Cargo:</span>
+                    <span id="cargo-display">0/5</span>
+                </div>
+            </div>
+            <div id="minimap-container">
+                <canvas id="minimap"></canvas>
+            </div>
+            <div id="message-box"></div>
+        </div>
+        <div id="start-screen" class="screen">
+            <h1>BORDER RUNNER</h1>
+            <p class="subtitle">A Smuggler's Tale</p>
+            <div class="controls-info">
+                <h3>Controls</h3>
+                <p><strong>W/A/S/D</strong> - Move</p>
+                <p><strong>SHIFT</strong> - Sprint</p>
+                <p><strong>E</strong> - Interact/Pickup</p>
+                <p><strong>SPACE</strong> - Drop Cargo</p>
+            </div>
+            <button id="start-btn">START GAME</button>
+            <button id="continue-btn" style="display:none;">CONTINUE</button>
+        </div>
+        <div id="game-over-screen" class="screen" style="display:none;">
+            <h1>BUSTED!</h1>
+            <p id="game-over-reason"></p>
+            <p>Final Score: $<span id="final-score">0</span></p>
+            <button id="restart-btn">TRY AGAIN</button>
+        </div>
+    </div>
+    <script src="game.js"></script>
+</body>
+</html>

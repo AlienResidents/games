@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pong Evolution - Genetic Algorithm Tournament</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div id="app">
+        <header>
+            <h1>PONG EVOLUTION</h1>
+            <p class="subtitle">Genetic Algorithm Tournament</p>
+        </header>
+
+        <div id="main-container">
+            <div id="game-panel">
+                <canvas id="gameCanvas"></canvas>
+                <div id="match-info">
+                    <div class="player-info left">
+                        <span class="player-name" id="left-name">---</span>
+                        <span class="player-score" id="left-score">0</span>
+                    </div>
+                    <div class="match-status">
+                        <span id="match-status">Ready</span>
+                    </div>
+                    <div class="player-info right">
+                        <span class="player-score" id="right-score">0</span>
+                        <span class="player-name" id="right-name">---</span>
+                    </div>
+                </div>
+            </div>
+
+            <div id="control-panel">
+                <div class="panel-section">
+                    <h3>Tournament Settings</h3>
+                    <div class="control-group">
+                        <label for="population-size">Population Size:</label>
+                        <input type="number" id="population-size" value="8" min="4" max="32" step="2">
+                    </div>
+                    <div class="control-group">
+                        <label for="points-to-win">Points to Win Match:</label>
+                        <input type="number" id="points-to-win" value="5" min="1" max="21">
+                    </div>
+                    <div class="control-group">
+                        <label for="matches-per-round">Matches per Pairing:</label>
+                        <input type="number" id="matches-per-round" value="3" min="1" max="9" step="2">
+                    </div>
+                    <div class="control-group">
+                        <label for="game-speed">Game Speed:</label>
+                        <input type="range" id="game-speed" value="1" min="1" max="10" step="1">
+                        <span id="speed-display">1x</span>
+                    </div>
+                    <div class="control-group">
+                        <label for="mutation-rate">Mutation Rate:</label>
+                        <input type="range" id="mutation-rate" value="0.1" min="0.01" max="0.5" step="0.01">
+                        <span id="mutation-display">10%</span>
+                    </div>
+                </div>
+
+                <div class="panel-section">
+                    <h3>Controls</h3>
+                    <button id="btn-start" class="btn primary">Start Tournament</button>
+                    <button id="btn-pause" class="btn" disabled>Pause</button>
+                    <button id="btn-reset" class="btn danger">Reset All</button>
+                </div>
+
+                <div class="panel-section">
+                    <h3>Generation: <span id="generation-num">0</span></h3>
+                    <div id="generation-stats">
+                        <p>Best Fitness: <span id="best-fitness">0</span></p>
+                        <p>Avg Fitness: <span id="avg-fitness">0</span></p>
+                        <p>Tournaments Run: <span id="tournaments-run">0</span></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="tournament-bracket">
+            <h2>Tournament Bracket</h2>
+            <div id="bracket-container"></div>
+        </div>
+
+        <div id="leaderboard-section">
+            <h2>Leaderboard - All Time</h2>
+            <table id="leaderboard">
+                <thead>
+                    <tr>
+                        <th>Rank</th>
+                        <th>Name</th>
+                        <th>Wins</th>
+                        <th>Losses</th>
+                        <th>Points For</th>
+                        <th>Points Against</th>
+                        <th>Fitness</th>
+                        <th>Generation</th>
+                    </tr>
+                </thead>
+                <tbody id="leaderboard-body">
+                </tbody>
+            </table>
+        </div>
+
+        <div id="genome-viewer">
+            <h2>Genome Viewer</h2>
+            <select id="genome-select">
+                <option value="">Select a player...</option>
+            </select>
+            <div id="genome-display"></div>
+        </div>
+
+        <div id="log-section">
+            <h2>Event Log</h2>
+            <div id="event-log"></div>
+        </div>
+    </div>
+    <script src="game.js"></script>
+</body>
+</html>

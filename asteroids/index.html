@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Asteroids</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div id="game-container">
+        <canvas id="gameCanvas"></canvas>
+        <div id="ui-overlay">
+            <div id="score-display">
+                <span id="score">0</span>
+            </div>
+            <div id="lives-display"></div>
+            <div id="level-display">LEVEL <span id="level">1</span></div>
+        </div>
+        <div id="start-screen" class="screen">
+            <h1>ASTEROIDS</h1>
+            <div class="controls-info">
+                <p><strong>W / UP</strong> - Thrust</p>
+                <p><strong>A / LEFT</strong> - Rotate Left</p>
+                <p><strong>D / RIGHT</strong> - Rotate Right</p>
+                <p><strong>SPACE</strong> - Fire</p>
+                <p><strong>S / DOWN</strong> - Hyperspace</p>
+            </div>
+            <button id="start-btn">START</button>
+            <div class="high-score">HIGH SCORE: <span id="high-score">0</span></div>
+        </div>
+        <div id="game-over-screen" class="screen" style="display:none;">
+            <h1>GAME OVER</h1>
+            <p>SCORE: <span id="final-score">0</span></p>
+            <p>HIGH SCORE: <span id="final-high-score">0</span></p>
+            <button id="restart-btn">PLAY AGAIN</button>
+        </div>
+        <div id="pause-screen" class="screen" style="display:none;">
+            <h1>PAUSED</h1>
+            <p>Press P to resume</p>
+        </div>
+    </div>
+    <script src="game.js"></script>
+</body>
+</html>
