@@ -87,32 +87,36 @@ AI vs AI Pong with genetic algorithms. Watch AI players evolve over generations.
 
 ## Architecture
 
-```
-┌─────────────────────────────────────────────────────────┐
-│                    Internet                              │
-└─────────────────────┬───────────────────────────────────┘
-                      │
-                      ▼
-┌─────────────────────────────────────────────────────────┐
-│              Traefik Ingress Controller                  │
-│         (TLS termination via Let's Encrypt)              │
-└─────────────────────┬───────────────────────────────────┘
-                      │
-        ┌─────────────┼─────────────┐
-        │             │             │
-        ▼             ▼             ▼
-┌───────────┐ ┌───────────┐ ┌───────────┐
-│ asteroids │ │  border-  │ │   pong-   │
-│    svc    │ │ runner-svc│ │evolution  │
-│           │ │           │ │   svc     │
-└─────┬─────┘ └─────┬─────┘ └─────┬─────┘
-      │             │             │
-      ▼             ▼             ▼
-┌───────────┐ ┌───────────┐ ┌───────────┐
-│ nginx:    │ │ nginx:    │ │ nginx:    │
-│ alpine    │ │ alpine    │ │ alpine    │
-│ (static)  │ │ (static)  │ │ (static)  │
-└───────────┘ └───────────┘ └───────────┘
+```mermaid
+%%{init: {'theme': 'base', 'themeVariables': { 'primaryColor': '#1a1a2e', 'primaryTextColor': '#ffffff', 'primaryBorderColor': '#00ff00', 'lineColor': '#00ff00', 'secondaryColor': '#16213e', 'tertiaryColor': '#0f3460', 'background': '#0a0a0a', 'mainBkg': '#1a1a2e', 'secondBkg': '#16213e', 'nodeBorder': '#00ff00', 'clusterBkg': '#16213e', 'clusterBorder': '#00ff00', 'titleColor': '#ffffff', 'edgeLabelBackground': '#1a1a2e'}}}%%
+flowchart TD
+    subgraph Internet
+        A[Internet]
+    end
+
+    subgraph Ingress["Traefik Ingress Controller<br/>(TLS via Let's Encrypt)"]
+        B[Traefik]
+    end
+
+    subgraph Services
+        C[asteroids-svc]
+        D[border-runner-svc]
+        E[pong-evolution-svc]
+    end
+
+    subgraph Pods
+        F["nginx:alpine<br/>(static)"]
+        G["nginx:alpine<br/>(static)"]
+        H["nginx:alpine<br/>(static)"]
+    end
+
+    A --> B
+    B --> C
+    B --> D
+    B --> E
+    C --> F
+    D --> G
+    E --> H
 ```
 
 **Session Handling**: All games use client-side localStorage for session persistence. No server-side session management required.

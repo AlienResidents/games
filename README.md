@@ -126,24 +126,22 @@ An alternative server-side implementation using Python, Flask, and WebSockets. F
 - Tournament bracket and standings display
 
 **Architecture:**
-```
-┌─────────────────────────────────────────────────────────────┐
-│                      Web Browser                             │
-│  ┌─────────────┐  ┌──────────────┐  ┌───────────────────┐   │
-│  │ Game Canvas │  │   Bracket    │  │    Standings      │   │
-│  │  (800x600)  │  │   Display    │  │   Leaderboard     │   │
-│  └─────────────┘  └──────────────┘  └───────────────────┘   │
-└─────────────────────────────────────────────────────────────┘
-                          │ WebSocket
-                          ▼
-┌─────────────────────────────────────────────────────────────┐
-│                    Flask Server (app.py)                     │
-│  ┌─────────────┐  ┌──────────────┐  ┌───────────────────┐   │
-│  │    Game     │  │  Tournament  │  │     Genetic       │   │
-│  │   Engine    │  │   Manager    │  │    Algorithm      │   │
-│  │  (game.py)  │  │(tournament.py│  │   (genetic.py)    │   │
-│  └─────────────┘  └──────────────┘  └───────────────────┘   │
-└─────────────────────────────────────────────────────────────┘
+```mermaid
+%%{init: {'theme': 'base', 'themeVariables': { 'primaryColor': '#1a1a2e', 'primaryTextColor': '#ffffff', 'primaryBorderColor': '#00ff00', 'lineColor': '#00ff00', 'secondaryColor': '#16213e', 'tertiaryColor': '#0f3460', 'background': '#0a0a0a', 'mainBkg': '#1a1a2e', 'secondBkg': '#16213e', 'nodeBorder': '#00ff00', 'clusterBkg': '#16213e', 'clusterBorder': '#00ff00', 'titleColor': '#ffffff', 'edgeLabelBackground': '#1a1a2e'}}}%%
+flowchart TD
+    subgraph Browser["Web Browser"]
+        A["Game Canvas<br/>(800x600)"]
+        B["Bracket<br/>Display"]
+        C["Standings<br/>Leaderboard"]
+    end
+
+    subgraph Server["Flask Server (app.py)"]
+        D["Game Engine<br/>(game.py)"]
+        E["Tournament Manager<br/>(tournament.py)"]
+        F["Genetic Algorithm<br/>(genetic.py)"]
+    end
+
+    Browser <-->|WebSocket| Server
 ```
 
 **Genetic Algorithm:**
