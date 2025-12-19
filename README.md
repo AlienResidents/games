@@ -27,7 +27,8 @@ A collection of browser-based games created entirely by Claude Code. Each game w
 |------|-----|
 | Asteroids | https://asteroids.cdd.net.au |
 | Border Runner | https://border-runner.cdd.net.au |
-| Pong Evolution | https://pong-evolution.cdd.net.au |
+| Pong Evolution (JS) | https://pong-evolution.cdd.net.au |
+| Pong Evolution (Flask) | https://pong-flask.cdd.net.au |
 
 ---
 

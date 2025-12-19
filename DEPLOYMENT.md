@@ -29,7 +29,8 @@ Three browser-based HTML5 Canvas games deployed to Kubernetes with TLS terminati
 |------|-----|-------------|
 | Asteroids | https://asteroids.YOUR_DOMAIN | Classic arcade game |
 | Border Runner | https://border-runner.YOUR_DOMAIN | Stealth survival game |
-| Pong Evolution | https://pong-evolution.YOUR_DOMAIN | Genetic algorithm tournament |
+| Pong Evolution (JS) | https://pong-evolution.YOUR_DOMAIN | Genetic algorithm tournament (client-side) |
+| Pong Evolution (Flask) | https://pong-flask.YOUR_DOMAIN | Genetic algorithm tournament (server-side) |
 
 ---
 
@@ -307,15 +308,29 @@ games/
 │       ├── deployment.yaml
 │       ├── service.yaml
 │       └── ingress.yaml
-└── pong-evolution/
-    ├── Dockerfile
-    ├── index.html
-    ├── game.js
-    ├── style.css
-    └── k8s/
-        ├── deployment.yaml
-        ├── service.yaml
-        └── ingress.yaml
+├── pong-evolution/
+│   ├── Dockerfile
+│   ├── index.html
+│   ├── game.js
+│   ├── style.css
+│   └── k8s/
+│       ├── deployment.yaml
+│       ├── service.yaml
+│       └── ingress.yaml
+└── llm/
+    └── pong-evolution/     # Python/Flask version
+        ├── Dockerfile
+        ├── app.py
+        ├── game.py
+        ├── genetic.py
+        ├── tournament.py
+        ├── requirements.txt
+        ├── templates/
+        ├── static/
+        └── k8s/
+            ├── deployment.yaml
+            ├── service.yaml
+            └── ingress.yaml
 ```
 
 ---

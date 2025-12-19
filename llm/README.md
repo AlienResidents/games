@@ -1,7 +1,7 @@
 | | |
 |---|---|
 | **Last Updated** | 2025-12-19 |
-| **Author** | Claude (Opus 4.5) <noreply@anthropic.com> |
+| **Author** | Chrispy <alienresidents@gmail.com>, Claude (Opus 4.5) |
 | **Version** | 1.0.0 |
 
 # LLM-Generated Games
@@ -13,6 +13,8 @@ A collection of games created entirely by Claude using Claude Code.
 ## Games
 
 ### [Pong Evolution Tournament](pong-evolution/)
+
+**Live:** https://pong-flask.cdd.net.au
 
 A web-based Pong game where AI-controlled paddles compete in tournaments. Each paddle uses a genetic algorithm that evolves through breeding after each tournament round.
 
@@ -263,6 +265,20 @@ if abs(target_y - paddle.y) < threshold:
 
 ---
 
+## Kubernetes Deployment
+
+This game is deployed to Kubernetes using Flask with WebSocket support.
+
+```bash
+kubectl apply -f pong-evolution/k8s/
+```
+
+See the main [DEPLOYMENT.md](../DEPLOYMENT.md) for complete deployment instructions.
+
+---
+
 ## License
 
-Created by Claude (Anthropic) for educational and entertainment purposes.
+MIT License
+
+👽 Directed by Chrispy <alienresidents@gmail.com>
