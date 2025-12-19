@@ -19,6 +19,7 @@ A collection of browser-based games created entirely by Claude Code. Each game w
 - [Prompts Used](#prompts-used)
 - [Technical Details](#technical-details)
 - [Statistics](#statistics)
+- [Claude Code Rules](#claude-code-rules)
 - [License](#license)
 
 ## Live Games
@@ -336,6 +337,17 @@ All vanilla JS games include `GAME_SPECIFICATION.md` files - comprehensive techn
 | Asteroids | 4 classes | ~25 | 21 |
 | Pong Evolution (JS) | 5 classes | ~40 | 12 genes + 5 UI |
 | Pong Evolution (Py) | 4 modules | ~50 | 6 genes + 4 UI |
+
+---
+
+## Claude Code Rules
+
+This project was created using [Claude Code](https://claude.com/claude-code) with custom rules defined in [CLAUDE.md](CLAUDE.md). These rules govern how Claude Code assists with development, including:
+
+- Git commit conventions and signatures
+- Code quality standards
+- Language-specific conventions (Python, JavaScript, Go, Bash)
+- Testing and documentation requirements
 
 ---
 
