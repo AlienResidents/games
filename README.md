@@ -2,7 +2,7 @@
 |---|---|
 | **Last Updated** | 2025-12-19 |
 | **Author** | Chrispy <alienresidents@gmail.com>, Claude Code (Opus 4.5) |
-| **Version** | 1.2.0 |
+| **Version** | 1.3.0 |
 
 # Browser Games Collection
 
