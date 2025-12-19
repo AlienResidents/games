@@ -20,6 +20,7 @@ A collection of browser-based games created entirely by Claude Code. Each game w
 - [Technical Details](#technical-details)
 - [Statistics](#statistics)
 - [Claude Code Rules](#claude-code-rules)
+- [Prompt Timeline](#prompt-timeline)
 - [License](#license)
 
 ## Live Games
@@ -498,6 +499,34 @@ This project was created using [Claude Code](https://claude.com/claude-code) wit
 - Code quality standards
 - Language-specific conventions (Python, JavaScript, Go, Bash)
 - Testing and documentation requirements
+
+---
+
+## Prompt Timeline
+
+A chronological record of all prompts used to create and evolve this project.
+
+| # | Date | Prompt | Result |
+|---|------|--------|--------|
+| 1 | 2025-12 | "ultrathink javascript game... 2d, top down, open world... drug smuggler... donald trump wall" | Border Runner game |
+| 2 | 2025-12 | "drop isn't working" | Fixed interaction distance |
+| 3 | 2025-12 | "Please create an Asteroids clone... binds to all IP addresses" | Asteroids game |
+| 4 | 2025-12 | "firing doesn't work, it freezes the game" | Fixed bullet collision |
+| 5 | 2025-12 | "the spin rate is way too fast, make it adjustable" | Configurable ship controls |
+| 6 | 2025-12 | "pong like game, computer vs. computer... genetic algorythms... tournament" | Pong Evolution (JS & Flask) |
+| 7 | 2025-12 | "ultrathink analyse... create a Dockerfile for each game... k8s directory... kubernetes manifests" | K8s deployment infrastructure |
+| 8 | 2025-12 | "let's add mobile phone support... so a keyboard isn't required" | Touch controls for mobile |
+| 9 | 2025-12 | "let's use versioning tags based on the timestamp" | Timestamp-based image tags |
+| 10 | 2025-12 | "let's create a service account in GCP" | GCP service account setup |
+| 11 | 2025-12 | "make sure we encrypt the service account key with 'sops'" | SOPS encryption |
+| 12 | 2025-12 | "when using sops, use --extract, and --set" | SOPS extraction method |
+| 13 | 2025-12 | "create a scripts/ directory... make the variables configurable" | setup-image-pull-secret.bash |
+| 14 | 2025-12 | "create a script for creating infrastructure" | setup-gcp-infrastructure.bash |
+| 15 | 2025-12 | "make sure you add all of the prompts... change the random ports to static ports" | Static ports + prompt docs |
+| 16 | 2025-12 | "have you documented all of the prompts used so far?" | Prompt verification |
+| 17 | 2025-12 | "have you updated the README version?" | Version bump to 1.3.0 |
+| 18 | 2025-12 | "include this and that prompt in the README too please" | Meta-prompt inclusion |
+| 19 | 2025-12 | "add a full timeline of prompts... include this one too :)" | This timeline |
 
 ---
 
