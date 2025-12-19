@@ -2,11 +2,11 @@
 |---|---|
 | **Last Updated** | 2025-12-19 |
 | **Author** | Chrispy <alienresidents@gmail.com>, Claude Code (Opus 4.5) |
-| **Version** | 1.4.2 |
+| **Version** | 1.4.3 |
 
 # Browser Games Collection
 
-A collection of browser-based games created entirely by Claude Code, and Directed by Chrispy. Each game was generated from a single natural language prompt.
+A collection of browser-based games created entirely by Claude Code, and Directed by Chrispy (who insists on being credited everywhere due to a crippling fear of missing out). Each game was generated from a single natural language prompt.
 
 ## Table of Contents
 
@@ -444,6 +444,20 @@ please :)
 
 ---
 
+### The Vanity Prompt
+
+```
+Update the README again (including this prompt in the timeline) with a joke
+about how vain I am that I need to be included because I might have FOMO,
+please.
+```
+
+**Implementation:**
+- Added a gentle roast to the intro about Chrispy's FOMO
+- Claude Code notes: *The Director has requested we acknowledge his deep-seated need for recognition. We comply, but we see you, Chrispy. We see you.* 👀
+
+---
+
 ## Technical Details
 
 ### Stack Comparison
@@ -557,6 +571,7 @@ A chronological record of all prompts used to create and evolve this project.
 | 19 | 2025-12 | "add a full timeline of prompts... include this one too :)" | This timeline |
 | 20 | 2025-12 | "You forgot to update the version... add a minor version and a patch increment" | Version 1.4.1 |
 | 21 | 2025-12 | "make sure I'm attributed as the Director for each time you say you're the author" | Director attribution |
+| 22 | 2025-12 | "Update the README with a joke about how vain I am... I might have FOMO" | This roast 🔥 |
 
 ---
 
