@@ -2,18 +2,19 @@
 |---|---|
 | **Last Updated** | 2025-12-19 |
 | **Author** | Claude Code (Opus 4.5) |
-| **Version** | 1.1.0 |
+| **Version** | 1.2.0 |
 
 # Browser Games Collection
 
-A collection of browser-based games created entirely by Claude Code using vanilla JavaScript and HTML5 Canvas. Each game was generated from a single natural language prompt.
+A collection of browser-based games created entirely by Claude Code. Each game was generated from a single natural language prompt.
 
 ## Table of Contents
 
 - [Games](#games)
   - [Border Runner](#border-runner)
   - [Asteroids](#asteroids)
-  - [Pong Evolution](#pong-evolution)
+  - [Pong Evolution (Vanilla JS)](#pong-evolution-vanilla-js)
+  - [Pong Evolution (Python/Flask)](#pong-evolution-pythonflask)
 - [Running the Games](#running-the-games)
 - [Prompts Used](#prompts-used)
 - [Technical Details](#technical-details)
@@ -64,9 +65,9 @@ A classic Asteroids arcade game clone with vector-style graphics and physics-bas
 
 ---
 
-### Pong Evolution
+### Pong Evolution (Vanilla JS)
 
-An AI-vs-AI Pong game featuring genetic algorithms that evolve over successive tournament generations.
+An AI-vs-AI Pong game featuring genetic algorithms that evolve over successive tournament generations. Pure client-side implementation.
 
 **Features:**
 - Computer vs computer gameplay (no human players)
@@ -96,11 +97,65 @@ An AI-vs-AI Pong game featuring genetic algorithms that evolve over successive t
 
 ---
 
+### Pong Evolution (Python/Flask)
+
+An alternative server-side implementation using Python, Flask, and WebSockets. Features 32 AI players competing in single-elimination tournaments.
+
+**Features:**
+- 32 AI players with unique genetic traits
+- Single elimination tournaments (5 rounds to champion)
+- 6-gene chromosome per AI:
+  - `reaction_time` - Response speed to ball movement
+  - `prediction_depth` - How far ahead to predict ball position
+  - `aggression` - Tendency to chase predicted position
+  - `noise_tolerance` - Random movement factor
+  - `speed_scaling` - Maximum paddle movement speed
+  - `anticipation` - Weight given to ball velocity vs position
+- Server-side game simulation at 60 FPS
+- WebSocket real-time updates
+- Tournament bracket and standings display
+
+**Architecture:**
+```
+┌─────────────────────────────────────────────────────────────┐
+│                      Web Browser                             │
+│  ┌─────────────┐  ┌──────────────┐  ┌───────────────────┐   │
+│  │ Game Canvas │  │   Bracket    │  │    Standings      │   │
+│  │  (800x600)  │  │   Display    │  │   Leaderboard     │   │
+│  └─────────────┘  └──────────────┘  └───────────────────┘   │
+└─────────────────────────────────────────────────────────────┘
+                          │ WebSocket
+                          ▼
+┌─────────────────────────────────────────────────────────────┐
+│                    Flask Server (app.py)                     │
+│  ┌─────────────┐  ┌──────────────┐  ┌───────────────────┐   │
+│  │    Game     │  │  Tournament  │  │     Genetic       │   │
+│  │   Engine    │  │   Manager    │  │    Algorithm      │   │
+│  │  (game.py)  │  │(tournament.py│  │   (genetic.py)    │   │
+│  └─────────────┘  └──────────────┘  └───────────────────┘   │
+└─────────────────────────────────────────────────────────────┘
+```
+
+**Genetic Algorithm:**
+- Tournament selection (3 random individuals compete)
+- Single-point crossover with 10% per-gene uniform crossover
+- Gaussian mutation (σ=0.2) with 10% probability per gene
+- Elitism: Top 50% survive unchanged
+
+**Fitness Function:**
+```
+fitness = (wins × 100) + (point_differential × 10) + (points_scored × 1)
+```
+
+**Directory:** [`llm/pong-evolution/`](llm/pong-evolution/)
+
+---
+
 ## Running the Games
 
-Each game is self-contained and requires only a static file server. No build process or dependencies needed.
+### Vanilla JS Games (Static Server)
 
-### Using Python (simplest)
+Each vanilla JS game requires only a static file server. No build process or dependencies needed.
 
 ```bash
 # Border Runner
@@ -109,27 +164,31 @@ cd border-runner && python3 -m http.server 8000 --bind 0.0.0.0
 # Asteroids
 cd asteroids && python3 -m http.server 8001 --bind 0.0.0.0
 
-# Pong Evolution
+# Pong Evolution (JS)
 cd pong-evolution && python3 -m http.server 8002 --bind 0.0.0.0
 ```
 
-Then open `http://localhost:PORT` in your browser.
+Or with Node.js: `npx serve <directory> -p <port>`
 
-### Using Node.js
+### Python/Flask Pong Evolution
 
 ```bash
-npx serve border-runner -p 8000
+cd llm/pong-evolution
+
+# Create virtual environment and install dependencies
+python3 -m venv .venv
+source .venv/bin/activate
+pip install -r requirements.txt
+
+# Start server (auto-finds free port, binds to 0.0.0.0)
+python app.py
 ```
-
-### Using any static file server
-
-Simply serve the directory containing `index.html` for each game.
 
 ---
 
 ## Prompts Used
 
-The following prompts were used to generate each game. Each game was created from a single prompt (with minor follow-up refinements).
+The following prompts were used to generate each game.
 
 ### Border Runner Prompt
 
@@ -160,6 +219,8 @@ server that binds to all IP addresses, and runs on a port that isn't used.
 
 ### Pong Evolution Prompt
 
+Used for both implementations:
+
 ```
 pong like game, computer vs. computer, each of the paddles uses a different
 algorythm, a tournament style ladder system, to find out who the best is,
@@ -168,21 +229,28 @@ them so they evolve, and then re-run the tournament. Make the tournament rounds
 configurable in the webui. Also listen on all IP addresses, on a free TCP port.
 ```
 
+**Planning clarifications (Python version):**
+- Population: 32 players
+- Tournament format: Single elimination
+
 ---
 
 ## Technical Details
 
-### Stack
+### Stack Comparison
 
-All games use:
-- **Language:** Vanilla JavaScript (ES6+)
-- **Rendering:** HTML5 Canvas 2D Context
-- **Storage:** localStorage for persistence (where applicable)
-- **Dependencies:** None
+| Component | Vanilla JS Games | Python Pong |
+|-----------|------------------|-------------|
+| Language | JavaScript (ES6+) | Python 3.10+ |
+| Rendering | HTML5 Canvas | HTML5 Canvas |
+| Server | Static file server | Flask + WebSockets |
+| Communication | N/A | Socket.IO |
+| Storage | localStorage | In-memory |
+| Dependencies | None | flask, flask-socketio, eventlet |
 
-### Architecture
+### File Structures
 
-Each game follows a similar structure:
+**Vanilla JS Games:**
 ```
 game-name/
 ├── README.md               # Game-specific documentation
@@ -192,9 +260,24 @@ game-name/
 └── game.js                 # All game logic
 ```
 
+**Python Pong Evolution:**
+```
+llm/pong-evolution/
+├── app.py                  # Flask server, WebSocket handlers
+├── game.py                 # Pong physics engine, AI controller
+├── genetic.py              # Chromosome, crossover, mutation
+├── tournament.py           # Bracket generation, match scheduling
+├── requirements.txt        # Python dependencies
+├── templates/
+│   └── index.html          # Web UI structure
+└── static/
+    ├── game.js             # Canvas rendering, WebSocket client
+    └── style.css           # Dark theme styling
+```
+
 ### Game Specifications
 
-All games include `GAME_SPECIFICATION.md` files - comprehensive technical documents optimized for LLMs to recreate the games. These include:
+All vanilla JS games include `GAME_SPECIFICATION.md` files - comprehensive technical documents optimized for LLMs to recreate the games:
 - Complete configuration constants
 - Game state structures
 - Entity class specifications
@@ -208,20 +291,22 @@ All games include `GAME_SPECIFICATION.md` files - comprehensive technical docume
 
 ### Lines of Code by Game
 
-| Game | HTML | CSS | JS | Spec | README | Total |
-|------|------|-----|-----|------|--------|-------|
-| Border Runner | 62 | 212 | 996 | ~500 | ~100 | ~1,870 |
-| Asteroids | 44 | 147 | 688 | ~600 | ~100 | ~1,579 |
-| Pong Evolution | 119 | 431 | 1,127 | ~500 | ~120 | ~2,297 |
-| **Total** | **225** | **790** | **2,811** | **~1,600** | **~320** | **~5,746** |
+| Game | HTML | CSS | JS | Python | Spec | README | Total |
+|------|------|-----|-----|--------|------|--------|-------|
+| Border Runner | 62 | 212 | 996 | - | ~500 | ~100 | ~1,870 |
+| Asteroids | 44 | 147 | 688 | - | ~600 | ~100 | ~1,579 |
+| Pong Evolution (JS) | 119 | 431 | 1,127 | - | ~500 | ~120 | ~2,297 |
+| Pong Evolution (Py) | 83 | 358 | 272 | 989 | - | - | ~1,702 |
+| **Total** | **308** | **1,148** | **3,083** | **989** | **~1,600** | **~320** | **~7,448** |
 
 ### Complexity Metrics
 
-| Game | Classes | Functions | Config Options |
-|------|---------|-----------|----------------|
-| Border Runner | 6 | ~30 | 17 |
-| Asteroids | 4 | ~25 | 21 |
-| Pong Evolution | 5 | ~40 | 12 genes + 5 UI |
+| Game | Classes/Modules | Functions | Config Options |
+|------|-----------------|-----------|----------------|
+| Border Runner | 6 classes | ~30 | 17 |
+| Asteroids | 4 classes | ~25 | 21 |
+| Pong Evolution (JS) | 5 classes | ~40 | 12 genes + 5 UI |
+| Pong Evolution (Py) | 4 modules | ~50 | 6 genes + 4 UI |
 
 ---
 
