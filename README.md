@@ -2,7 +2,7 @@
 |---|---|
 | **Last Updated** | 2025-12-19 |
 | **Author** | Chrispy <alienresidents@gmail.com>, Claude Code (Opus 4.5) |
-| **Version** | 1.3.0 |
+| **Version** | 1.4.1 |
 
 # Browser Games Collection
 
@@ -416,6 +416,19 @@ include this and that prompt in the README too please.
 
 ---
 
+### Version and Timeline Prompt
+
+```
+You forgot to update the version of the README, so add a minor version and a
+patch increment too, and add this prompt to the rest.
+```
+
+**Implementation:**
+- Bumped version from 1.3.0 to 1.4.1
+- Added this prompt to documentation and timeline
+
+---
+
 ## Technical Details
 
 ### Stack Comparison
@@ -527,6 +540,7 @@ A chronological record of all prompts used to create and evolve this project.
 | 17 | 2025-12 | "have you updated the README version?" | Version bump to 1.3.0 |
 | 18 | 2025-12 | "include this and that prompt in the README too please" | Meta-prompt inclusion |
 | 19 | 2025-12 | "add a full timeline of prompts... include this one too :)" | This timeline |
+| 20 | 2025-12 | "You forgot to update the version... add a minor version and a patch increment" | Version 1.4.1 |
 
 ---
 
