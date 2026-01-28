@@ -11,6 +11,7 @@ This document describes how to deploy the browser-based games to Kubernetes.
 ## Table of Contents
 
 - [Overview](#overview)
+- [Developer Setup](#developer-setup)
 - [Conversation History](#conversation-history)
 - [Prerequisites](#prerequisites)
 - [Games Included](#games-included)
@@ -31,6 +32,48 @@ Three browser-based HTML5 Canvas games deployed to Kubernetes with TLS terminati
 | Border Runner | https://border-runner.YOUR_DOMAIN | Stealth survival game |
 | Pong Evolution (JS) | https://pong-evolution.YOUR_DOMAIN | Genetic algorithm tournament (client-side) |
 | Pong Evolution (Flask) | https://pong-flask.YOUR_DOMAIN | Genetic algorithm tournament (server-side) |
+
+---
+
+## Developer Setup
+
+### Pre-commit Hooks
+
+This repository uses pre-commit hooks to enforce code quality and security scanning.
+
+```bash
+# Install pre-commit
+pip install pre-commit
+
+# Install hooks
+pre-commit install
+
+# Run manually on all files
+pre-commit run --all-files
+```
+
+### Detect-Secrets
+
+Secrets scanning is configured via detect-secrets. To update the baseline after intentional changes:
+
+```bash
+# Scan and update baseline
+detect-secrets scan \
+  --exclude-secrets "sha512-" \
+  --exclude-secrets "ENC\[AES256_GCM|integrity\:[[:space:]]sha512" \
+  --baseline .secrets.baseline
+
+# Audit flagged secrets
+detect-secrets audit .secrets.baseline
+```
+
+**Configured hooks:**
+- `detect-secrets` - Prevents accidental secret commits
+- `trailing-whitespace` - Removes trailing whitespace
+- `check-shebang-scripts-are-executable` - Ensures scripts are executable
+- `detect-private-key` - Catches private key patterns
+- `end-of-file-fixer` - Ensures files end with newline
+- `mixed-line-ending` - Enforces LF line endings
 
 ---
 
@@ -394,10 +437,14 @@ kubectl logs -n games deployment/pong-evolution
 ```
 games/
 ├── DEPLOYMENT.md           # This file
+├── .pre-commit-config.yaml # Pre-commit hooks configuration
+├── .secrets.baseline       # Detect-secrets baseline
 ├── .sops.yaml              # SOPS encryption rules
 ├── k8s/
 │   └── namespace.yaml      # Shared namespace
 ├── scripts/
+│   ├── container-build.bash          # Build pong-flask container
+│   ├── container-push.bash           # Push pong-flask container
 │   ├── setup-gcp-infrastructure.bash # GCP resources setup script
 │   └── setup-image-pull-secret.bash  # K8s image pull secret script
 ├── secrets/
@@ -429,20 +476,19 @@ games/
 │       ├── deployment.yaml
 │       ├── service.yaml
 │       └── ingress.yaml
-└── llm/
-    └── pong-evolution/     # Python/Flask version
-        ├── Dockerfile
-        ├── app.py
-        ├── game.py
-        ├── genetic.py
-        ├── tournament.py
-        ├── requirements.txt
-        ├── templates/
-        ├── static/
-        └── k8s/
-            ├── deployment.yaml
-            ├── service.yaml
-            └── ingress.yaml
+└── pong-flask/             # Python/Flask version
+    ├── Dockerfile
+    ├── app.py
+    ├── game.py
+    ├── genetic.py
+    ├── tournament.py
+    ├── requirements.txt
+    ├── templates/
+    ├── static/
+    └── k8s/
+        ├── deployment.yaml
+        ├── service.yaml
+        └── ingress.yaml
 ```
 
 ---
