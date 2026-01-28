@@ -156,7 +156,23 @@ flowchart TD
 fitness = (wins × 100) + (point_differential × 10) + (points_scored × 1)
 ```
 
-**Directory:** [`llm/pong-evolution/`](llm/pong-evolution/)
+**Game Engine:**
+- Frame rate: 60 FPS server-side simulation
+- Winning condition: First to 5 points
+- Match timeout: 10,000 frames max
+- Ball speed increases on each hit (capped at 15)
+
+**WebSocket Events:**
+
+| Event | Direction | Description |
+|-------|-----------|-------------|
+| `initialize` | Client → Server | Create new population |
+| `start_tournament` | Client → Server | Begin tournament(s) |
+| `state_update` | Server → Client | Full tournament state |
+| `game_update` | Server → Client | Real-time game frame |
+| `match_complete` | Server → Client | Match result |
+
+**Directory:** [`pong-flask/`](pong-flask/)
 
 ---
 
@@ -202,7 +218,7 @@ See [DEPLOYMENT.md](DEPLOYMENT.md) for complete instructions including:
 ### Python/Flask Pong Evolution
 
 ```bash
-cd llm/pong-evolution
+cd pong-flask
 
 # Create virtual environment and install dependencies
 python3 -m venv .venv
@@ -485,7 +501,7 @@ game-name/
 
 **Python Pong Evolution:**
 ```
-llm/pong-evolution/
+pong-flask/
 ├── app.py                  # Flask server, WebSocket handlers
 ├── game.py                 # Pong physics engine, AI controller
 ├── genetic.py              # Chromosome, crossover, mutation

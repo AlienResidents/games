@@ -33,6 +33,10 @@ class Chromosome:
     def __post_init__(self):
         if not self.genes:
             self.genes = [random.random() for _ in range(self.NUM_GENES)]
+            # Ensure minimum values for playable AI
+            self.genes[self.AGGRESSION] = 0.5 + self.genes[self.AGGRESSION] * 0.5  # 0.5-1.0
+            self.genes[self.SPEED_SCALING] = 0.6 + self.genes[self.SPEED_SCALING] * 0.4  # 0.6-1.0
+            self.genes[self.REACTION_TIME] = 0.4 + self.genes[self.REACTION_TIME] * 0.6  # 0.4-1.0
         if not self.name:
             self.name = self._generate_name()
 
@@ -125,11 +129,19 @@ def mutate(chromosome: Chromosome, mutation_rate: float = 0.1, mutation_strength
     """Apply random mutations to a chromosome."""
     mutated_genes = chromosome.genes.copy()
 
+    # Minimum values for key genes to ensure playable AI
+    gene_mins = {
+        Chromosome.AGGRESSION: 0.5,
+        Chromosome.SPEED_SCALING: 0.6,
+        Chromosome.REACTION_TIME: 0.4,
+    }
+
     for i in range(len(mutated_genes)):
         if random.random() < mutation_rate:
             # Gaussian mutation
             mutation = random.gauss(0, mutation_strength)
-            mutated_genes[i] = max(0.0, min(1.0, mutated_genes[i] + mutation))
+            min_val = gene_mins.get(i, 0.0)
+            mutated_genes[i] = max(min_val, min(1.0, mutated_genes[i] + mutation))
 
     chromosome.genes = mutated_genes
     chromosome.name = chromosome._generate_name()  # Regenerate name if genes changed significantly

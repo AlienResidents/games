@@ -1,7 +1,9 @@
 #!/usr/bin/env python3
 """Flask server for Pong Evolution tournament."""
 
-import threading
+import eventlet
+eventlet.monkey_patch()
+
 import time
 from flask import Flask, render_template, jsonify
 from flask_socketio import SocketIO, emit
@@ -11,7 +13,7 @@ from tournament import TournamentManager
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'pong-evolution-secret'
-socketio = SocketIO(app, cors_allowed_origins="*")
+socketio = SocketIO(app, cors_allowed_origins="*", async_mode='eventlet')
 
 # Global state
 manager = TournamentManager(population_size=32)
@@ -70,10 +72,9 @@ def handle_start_tournament(data):
     emit('state_update', manager.get_state(), broadcast=True)
     emit('message', {'text': f'Starting {num_tournaments} tournament(s)...'}, broadcast=True)
 
-    # Start game loop in background thread
-    if game_thread is None or not game_thread.is_alive():
-        game_thread = threading.Thread(target=game_loop, daemon=True)
-        game_thread.start()
+    # Start game loop in background greenlet
+    if game_thread is None or game_thread.dead:
+        game_thread = eventlet.spawn(game_loop)
 
 
 @socketio.on('stop')
@@ -91,9 +92,8 @@ def handle_resume():
     running = True
     emit('message', {'text': 'Tournament resumed'}, broadcast=True)
 
-    if game_thread is None or not game_thread.is_alive():
-        game_thread = threading.Thread(target=game_loop, daemon=True)
-        game_thread.start()
+    if game_thread is None or game_thread.dead:
+        game_thread = eventlet.spawn(game_loop)
 
 
 @socketio.on('set_speed')
