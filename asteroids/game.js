@@ -410,7 +410,7 @@ function spawnAsteroids(count, avoidShip = true) {
 
 // Update lives display
 function updateLivesDisplay() {
-    livesDisplay.innerHTML = '';
+    livesDisplay.replaceChildren();
     for (let i = 0; i < game.lives; i++) {
         const life = document.createElement('div');
         life.className = 'life-icon';

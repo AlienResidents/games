@@ -110,15 +110,22 @@ function updateScores(state) {
 
 function updateBracket(tournamentState) {
     if (!tournamentState || !tournamentState.rounds) {
-        bracket.innerHTML = '<p>No tournament in progress</p>';
+        const msg = document.createElement('p');
+        msg.textContent = 'No tournament in progress';
+        bracket.replaceChildren(msg);
         return;
     }
 
-    let html = '<div class="bracket-rounds">';
+    const roundsDiv = document.createElement('div');
+    roundsDiv.className = 'bracket-rounds';
 
     tournamentState.rounds.forEach((round, roundIdx) => {
-        html += `<div class="bracket-round">`;
-        html += `<h3>Round ${roundIdx + 1}</h3>`;
+        const roundDiv = document.createElement('div');
+        roundDiv.className = 'bracket-round';
+
+        const title = document.createElement('h3');
+        title.textContent = `Round ${roundIdx + 1}`;
+        roundDiv.appendChild(title);
 
         round.forEach((match) => {
             const p1 = match.player1 ? match.player1.name.split('-')[0] : 'TBD';
@@ -126,45 +133,73 @@ function updateBracket(tournamentState) {
             const isActive = !match.completed && match.player1 && match.player2;
             const winnerId = match.winner ? match.winner.id : null;
 
-            html += `<div class="bracket-match ${isActive ? 'active' : ''} ${match.completed ? 'completed' : ''}">`;
-            html += `<div class="match-player ${match.player1 && winnerId === match.player1.id ? 'winner' : ''}">${p1} ${match.completed ? match.player1_score : ''}</div>`;
-            html += `<div class="match-vs">vs</div>`;
-            html += `<div class="match-player ${match.player2 && winnerId === match.player2.id ? 'winner' : ''}">${p2} ${match.completed ? match.player2_score : ''}</div>`;
-            html += `</div>`;
+            const matchDiv = document.createElement('div');
+            matchDiv.className = `bracket-match ${isActive ? 'active' : ''} ${match.completed ? 'completed' : ''}`;
+
+            const p1Div = document.createElement('div');
+            p1Div.className = `match-player ${match.player1 && winnerId === match.player1.id ? 'winner' : ''}`;
+            p1Div.textContent = `${p1} ${match.completed ? match.player1_score : ''}`;
+
+            const vsDiv = document.createElement('div');
+            vsDiv.className = 'match-vs';
+            vsDiv.textContent = 'vs';
+
+            const p2Div = document.createElement('div');
+            p2Div.className = `match-player ${match.player2 && winnerId === match.player2.id ? 'winner' : ''}`;
+            p2Div.textContent = `${p2} ${match.completed ? match.player2_score : ''}`;
+
+            matchDiv.append(p1Div, vsDiv, p2Div);
+            roundDiv.appendChild(matchDiv);
         });
 
-        html += `</div>`;
+        roundsDiv.appendChild(roundDiv);
     });
 
-    html += '</div>';
+    const children = [roundsDiv];
 
     if (tournamentState.champion) {
-        html += `<div class="champion">Champion: ${tournamentState.champion.name}</div>`;
+        const championDiv = document.createElement('div');
+        championDiv.className = 'champion';
+        championDiv.textContent = `Champion: ${tournamentState.champion.name}`;
+        children.push(championDiv);
     }
 
-    bracket.innerHTML = html;
+    bracket.replaceChildren(...children);
 }
 
 function updateStandings(standingsList) {
     if (!standingsList || standingsList.length === 0) {
-        standings.innerHTML = '<p>No standings available</p>';
+        const msg = document.createElement('p');
+        msg.textContent = 'No standings available';
+        standings.replaceChildren(msg);
         return;
     }
 
-    let html = '<table><thead><tr><th>#</th><th>Name</th><th>W</th><th>L</th><th>Gen</th></tr></thead><tbody>';
+    const table = document.createElement('table');
+    const thead = document.createElement('thead');
+    const headerRow = document.createElement('tr');
+    for (const label of ['#', 'Name', 'W', 'L', 'Gen']) {
+        const th = document.createElement('th');
+        th.textContent = label;
+        headerRow.appendChild(th);
+    }
+    thead.appendChild(headerRow);
+    table.appendChild(thead);
 
+    const tbody = document.createElement('tbody');
     standingsList.slice(0, 10).forEach((player, idx) => {
-        html += `<tr>`;
-        html += `<td>${idx + 1}</td>`;
-        html += `<td>${player.name.split('-')[0]}</td>`;
-        html += `<td>${player.wins}</td>`;
-        html += `<td>${player.losses}</td>`;
-        html += `<td>${player.generation}</td>`;
-        html += `</tr>`;
+        const row = document.createElement('tr');
+        const values = [idx + 1, player.name.split('-')[0], player.wins, player.losses, player.generation];
+        for (const value of values) {
+            const td = document.createElement('td');
+            td.textContent = value;
+            row.appendChild(td);
+        }
+        tbody.appendChild(row);
     });
+    table.appendChild(tbody);
 
-    html += '</tbody></table>';
-    standings.innerHTML = html;
+    standings.replaceChildren(table);
 }
 
 function addLog(message) {

@@ -17,11 +17,18 @@ spec:
       labels:
         app: pong-flask
     spec:
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 1000
       imagePullSecrets:
         - name: gcr-secret
       containers:
         - name: pong-flask
           image: australia-southeast1-docker.pkg.dev/chrispy/games/pong-flask:latest
+          securityContext:
+            runAsNonRoot: true
+            runAsUser: 1000
+            allowPrivilegeEscalation: false
           ports:
             - containerPort: 5000
               protocol: TCP

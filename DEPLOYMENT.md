@@ -148,9 +148,9 @@ flowchart TD
     end
 
     subgraph Pods
-        F["nginx:alpine<br/>(static)"]
-        G["nginx:alpine<br/>(static)"]
-        H["nginx:alpine<br/>(static)"]
+        F["nginx-unprivileged:alpine<br/>(static)"]
+        G["nginx-unprivileged:alpine<br/>(static)"]
+        H["nginx-unprivileged:alpine<br/>(static)"]
     end
 
     A --> B

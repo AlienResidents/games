@@ -17,5 +17,9 @@ COPY --chmod=644 static/ ./static/
 # Expose port
 EXPOSE 5000
 
+# Run as non-root user
+RUN adduser -D -u 1000 appuser
+USER appuser
+
 # Run with gunicorn and eventlet worker for WebSocket support
 CMD ["gunicorn", "--worker-class", "eventlet", "-w", "1", "--bind", "0.0.0.0:5000", "app:app"]

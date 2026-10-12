@@ -813,7 +813,11 @@ class GameController {
         const entry = document.createElement('div');
         entry.className = `log-entry ${type}`;
         const time = new Date().toLocaleTimeString();
-        entry.innerHTML = `<span class="timestamp">[${time}]</span> ${message}`;
+        const timestamp = document.createElement('span');
+        timestamp.className = 'timestamp';
+        timestamp.textContent = `[${time}]`;
+        entry.appendChild(timestamp);
+        entry.appendChild(document.createTextNode(` ${message}`));
         this.elements.eventLog.insertBefore(entry, this.elements.eventLog.firstChild);
 
         // Keep log manageable
@@ -929,11 +933,14 @@ class GameController {
         this.elements.bestFitness.textContent = '0';
         this.elements.avgFitness.textContent = '0';
         this.elements.tournamentsRun.textContent = '0';
-        this.elements.bracketContainer.innerHTML = '';
-        this.elements.leaderboardBody.innerHTML = '';
-        this.elements.genomeSelect.innerHTML = '<option value="">Select a player...</option>';
-        this.elements.genomeDisplay.innerHTML = '';
-        this.elements.eventLog.innerHTML = '';
+        this.elements.bracketContainer.replaceChildren();
+        this.elements.leaderboardBody.replaceChildren();
+        const defaultOption = document.createElement('option');
+        defaultOption.value = '';
+        defaultOption.textContent = 'Select a player...';
+        this.elements.genomeSelect.replaceChildren(defaultOption);
+        this.elements.genomeDisplay.replaceChildren();
+        this.elements.eventLog.replaceChildren();
 
         this.log('System reset', 'info');
     }
@@ -989,7 +996,7 @@ class GameController {
         if (!this.tournament) return;
 
         const container = this.elements.bracketContainer;
-        container.innerHTML = '';
+        container.replaceChildren();
 
         const roundNames = ['Round 1', 'Quarterfinals', 'Semifinals', 'Finals', 'Champion'];
 
@@ -1015,13 +1022,21 @@ class GameController {
                 p1Div.className = 'bracket-player';
                 if (match.winner === match.player1) p1Div.classList.add('winner');
                 else if (match.winner) p1Div.classList.add('loser');
-                p1Div.innerHTML = `<span>${match.player1?.name || 'TBD'}</span><span>${this.getMatchScore(match, 1)}</span>`;
+                const p1Name = document.createElement('span');
+                p1Name.textContent = match.player1?.name || 'TBD';
+                const p1Score = document.createElement('span');
+                p1Score.textContent = this.getMatchScore(match, 1);
+                p1Div.append(p1Name, p1Score);
 
                 const p2Div = document.createElement('div');
                 p2Div.className = 'bracket-player';
                 if (match.winner === match.player2) p2Div.classList.add('winner');
                 else if (match.winner) p2Div.classList.add('loser');
-                p2Div.innerHTML = `<span>${match.player2?.name || 'BYE'}</span><span>${this.getMatchScore(match, 2)}</span>`;
+                const p2Name = document.createElement('span');
+                p2Name.textContent = match.player2?.name || 'BYE';
+                const p2Score = document.createElement('span');
+                p2Score.textContent = this.getMatchScore(match, 2);
+                p2Div.append(p2Name, p2Score);
 
                 matchDiv.appendChild(p1Div);
                 matchDiv.appendChild(p2Div);
@@ -1060,7 +1075,7 @@ class GameController {
     updateLeaderboard() {
         const leaderboard = this.evolution.getLeaderboard();
         const tbody = this.elements.leaderboardBody;
-        tbody.innerHTML = '';
+        tbody.replaceChildren();
 
         leaderboard.forEach((entry, index) => {
             const row = document.createElement('tr');
@@ -1068,23 +1083,31 @@ class GameController {
             if (index === 1) row.classList.add('rank-2');
             if (index === 2) row.classList.add('rank-3');
 
-            row.innerHTML = `
-                <td>${index + 1}</td>
-                <td>${entry.name}</td>
-                <td>${entry.totalWins}</td>
-                <td>${entry.totalLosses}</td>
-                <td>${entry.totalPointsFor}</td>
-                <td>${entry.totalPointsAgainst}</td>
-                <td>${entry.bestFitness}</td>
-                <td>${entry.generation}</td>
-            `;
+            const cells = [
+                index + 1,
+                entry.name,
+                entry.totalWins,
+                entry.totalLosses,
+                entry.totalPointsFor,
+                entry.totalPointsAgainst,
+                entry.bestFitness,
+                entry.generation
+            ];
+            for (const cell of cells) {
+                const td = document.createElement('td');
+                td.textContent = cell;
+                row.appendChild(td);
+            }
             tbody.appendChild(row);
         });
     }
 
     updateGenomeSelect() {
         const select = this.elements.genomeSelect;
-        select.innerHTML = '<option value="">Select a player...</option>';
+        const defaultOption = document.createElement('option');
+        defaultOption.value = '';
+        defaultOption.textContent = 'Select a player...';
+        select.replaceChildren(defaultOption);
 
         for (const player of this.evolution.population) {
             const option = document.createElement('option');
@@ -1096,7 +1119,7 @@ class GameController {
 
     displayGenome(playerName) {
         const display = this.elements.genomeDisplay;
-        display.innerHTML = '';
+        display.replaceChildren();
 
         if (!playerName) return;
 
@@ -1109,11 +1132,22 @@ class GameController {
 
             const geneDiv = document.createElement('div');
             geneDiv.className = 'genome-gene';
-            geneDiv.innerHTML = `
-                <div class="gene-name">${gene}</div>
-                <div class="gene-value">${value.toFixed(3)}</div>
-                <div class="gene-bar"><div class="gene-bar-fill" style="width: ${normalized * 100}%"></div></div>
-            `;
+            const geneName = document.createElement('div');
+            geneName.className = 'gene-name';
+            geneName.textContent = gene;
+
+            const geneValue = document.createElement('div');
+            geneValue.className = 'gene-value';
+            geneValue.textContent = value.toFixed(3);
+
+            const geneBar = document.createElement('div');
+            geneBar.className = 'gene-bar';
+            const geneBarFill = document.createElement('div');
+            geneBarFill.className = 'gene-bar-fill';
+            geneBarFill.style.width = `${normalized * 100}%`;
+            geneBar.appendChild(geneBarFill);
+
+            geneDiv.append(geneName, geneValue, geneBar);
             display.appendChild(geneDiv);
         }
     }

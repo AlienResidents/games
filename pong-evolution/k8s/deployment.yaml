@@ -17,13 +17,20 @@ spec:
       labels:
         app: pong-evolution
     spec:
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 101
       imagePullSecrets:
         - name: gcr-secret
       containers:
         - name: pong-evolution
           image: australia-southeast1-docker.pkg.dev/chrispy/games/pong-evolution:latest
+          securityContext:
+            runAsNonRoot: true
+            runAsUser: 101
+            allowPrivilegeEscalation: false
           ports:
-            - containerPort: 80
+            - containerPort: 8080
               protocol: TCP
           resources:
             requests:
@@ -35,12 +42,12 @@ spec:
           livenessProbe:
             httpGet:
               path: /
-              port: 80
+              port: 8080
             initialDelaySeconds: 5
             periodSeconds: 30
           readinessProbe:
             httpGet:
               path: /
-              port: 80
+              port: 8080
             initialDelaySeconds: 3
             periodSeconds: 10

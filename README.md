@@ -197,7 +197,7 @@ Or with Node.js: `npx serve <directory> -p <port>`
 
 ### Kubernetes Deployment
 
-The vanilla JS games can be deployed to Kubernetes using the included manifests. Each game is containerized with nginx:alpine and served via Traefik ingress with automatic TLS certificates.
+The vanilla JS games can be deployed to Kubernetes using the included manifests. Each game is containerized with nginxinc/nginx-unprivileged:alpine and served via Traefik ingress with automatic TLS certificates.
 
 ```bash
 # Quick deploy (after configuring your registry and domain)
@@ -323,7 +323,7 @@ and push to git. Lesssssss go!
 - Container Tool: Podman (not Docker)
 
 **Implementation:**
-- Created Dockerfiles using nginx:alpine for static games
+- Created Dockerfiles using nginxinc/nginx-unprivileged:alpine for static games
 - Created K8s manifests (deployment, service, ingress) for each game
 - Session handling via client-side localStorage
 - Full documentation in [DEPLOYMENT.md](DEPLOYMENT.md)
